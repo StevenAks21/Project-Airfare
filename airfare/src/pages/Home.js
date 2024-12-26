@@ -1,9 +1,13 @@
+import Navbar from "../elements/Navbar";
 function Home() {
   return (
     <div className="Home">
-      <p>Testing</p>
+      <Navbar/>
+      <p>Welcome to DailyFares.</p>
     </div>
   );
 }
+
+
 
 export default Home;
