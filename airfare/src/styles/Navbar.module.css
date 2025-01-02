@@ -1,0 +1,46 @@
+/* Navbar.module.css */
+.navbarContainer {
+    background-color: #000; /* Black background for a modern aesthetic */
+    padding: 15px 30px; /* More generous padding for a clean layout */
+  }
+  
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .navbarMenu {
+    list-style: none;
+    display: flex;
+    gap: 25px; /* More spacing for a clean design */
+    margin: 0;
+    padding: 0;
+  }
+  
+  .navbarItem {
+    text-transform: uppercase;
+  }
+  
+  .navbarLink {
+    text-decoration: none;
+    color: #fff; /* White text for contrast against the black background */
+    font-weight: 500;
+    font-size: 1rem; /* Modern, readable font size */
+    padding: 8px 12px;
+    border: 1px solid transparent; /* Add subtle border for hover effect */
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .navbarLink:hover {
+    background-color: #fff; /* Invert colors on hover */
+    color: #000; /* Black text on white background */
+    border: 1px solid #fff; /* Add visible border on hover */
+    border-radius: 4px; /* Slightly rounded corners */
+    border-radius: 20%;
+  }
+  
+  .navbarLink:active {
+    transform: scale(0.95); /* Subtle button press effect */
+  }
+  
