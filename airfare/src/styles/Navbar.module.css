@@ -2,18 +2,22 @@
 .navbarContainer {
     background-color: #000; /* Black background for a modern aesthetic */
     padding: 15px 30px; /* More generous padding for a clean layout */
+    display: flex;
+    justify-content: center; /* Center the navbar horizontally */
   }
   
   .navbar {
     display: flex;
-    justify-content: space-between;
+    justify-content: center; /* Center the content within the navbar */
     align-items: center;
+    width: 100%; /* Ensure the navbar spans the entire width */
+    max-width: 1200px; /* Optional: Limit the navbar width for a clean design */
   }
   
   .navbarMenu {
     list-style: none;
     display: flex;
-    gap: 25px; /* More spacing for a clean design */
+    gap: 200px; /* Increased spacing between links for more separation */
     margin: 0;
     padding: 0;
   }
@@ -36,8 +40,8 @@
     background-color: #fff; /* Invert colors on hover */
     color: #000; /* Black text on white background */
     border: 1px solid #fff; /* Add visible border on hover */
-    border-radius: 4px; /* Slightly rounded corners */
-    border-radius: 20%;
+    border-radius: 50%; /* Circular hover effect */
+    padding: 15px; /* Increase padding for better circular shape */
   }
   
   .navbarLink:active {
