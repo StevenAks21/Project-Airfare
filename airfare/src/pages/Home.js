@@ -1,11 +1,12 @@
 import Navbar from "../elements/Navbar";
-import "../styles/Home.css"
+import style from "../styles/Home.module.css";
+
 function Home() {
   return (
     <div className="Home">
       <Navbar/>
-      <p>Welcome to DailyFares.</p>
-      <p>Hello there!</p>
+      <p className = {style.Red}>Welcome to DailyFares.</p>
+      <p className = {style.Red}>Hello there!</p>
     </div>
   );
 }
