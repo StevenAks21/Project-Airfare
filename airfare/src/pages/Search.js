@@ -1,10 +1,16 @@
 import Navbar from "../elements/Navbar";
 
-function Search(){
-    return(
+function scrape() {
+    console.log(`test`)
+}
+
+function Search() {
+    return (
         <div>
-            <Navbar/>
+            <title>CheapFares - Search</title>
+            <Navbar />
             <p>From Search</p>
+            <button onClick={scrape}>Search</button>
         </div>
     )
 }

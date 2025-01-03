@@ -1,0 +1,24 @@
+{
+  "name": "project-airfare",
+  "version": "1.0.0",
+  "description": "<!-- TDLR of Project --> ## Description This app helps users find the cheapest airfares and redirects them to the airline's website for booking, built with React, JavaScript, HTML, and CSS.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/StevenAks21/Project-Airfare.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/StevenAks21/Project-Airfare/issues"
+  },
+  "homepage": "https://github.com/StevenAks21/Project-Airfare#readme",
+  "dependencies": {
+    "puppeteer": "^23.11.1"
+  }
+}
