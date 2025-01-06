@@ -1,81 +1,49 @@
 const express = require('express');
 const puppeteer = require('puppeteer');
-const app = express();
 const fs = require('fs');
 
-// Function to scrape Google Flights with dynamic parameters
-// Function to scrape Google Flights with dynamic parameters
-// Function to scrape Google Flights with dynamic parameters
-async function scrapeGoogleFlights(source, destination, departureDate, returnDate) {
-    let browser;
-    try {
-        // Launch the browser
-        browser = await puppeteer.launch({ headless: false });
+const app = express();
 
-        // Open a new page
+async function scrape() {
+    try {
+        const browser = await puppeteer.launch({ headless: true });
         const page = await browser.newPage();
 
-        // Construct the URL dynamically based on input parameters
-        const baseUrl = 'https://www.google.com/travel/flights';
-        let url = `${baseUrl}?hl=en&gl=au&curr=AUD`;
+        // Set User-Agent to mimic a real browser
+        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36');
 
-        // Navigate to the initial Google Flights page
-        await page.goto(url);
+        console.log('Navigating to the page...');
+        await page.goto(
+            'https://www.kiwi.com/us/search/results/brisbane-queensland-australia/yogyakarta-international-airport-yogyakarta-indonesia/2025-02-09/2025-02-12',
+            { waitUntil: 'networkidle2' }
+        );
 
-        // Wait for "Where from?" input field to be visible and interact with it
-        const sourceSelector = 'input[jsname="yrriRe"][aria-label="Where from?"]';
-        await page.waitForSelector(sourceSelector, { timeout: 60000 });  // Increased timeout to 60 seconds
-        await page.click(sourceSelector);
-        await page.type(sourceSelector, source, { delay: 100 });
+        // Save a screenshot of the page
+        console.log('Saving screenshot...');
+        await page.screenshot({ path: 'example.png' });
 
-        const logoSelector =`Eo39gc`
-        await page.click(logoSelector)
-
-        // Wait for "Where to?" input field to be visible and interact with it
-        const destinationSelector = 'input[jsname="yrriRe"][aria-label="Where to?"]';
-        await page.waitForSelector(destinationSelector, { timeout: 60000 });  // Increased timeout to 60 seconds
-        await page.click(destinationSelector);
-        await page.type(destinationSelector, destination, { delay: 100 });
-        // Take a screenshot (optional, for debugging)
-        await page.screenshot({ path: 'flights_example.png' });
-
-        // Get the page content
+        // Get HTML content of the page
+        console.log('Fetching page content...');
         const html = await page.content();
-        fs.writeFileSync("scraped_flights.html", html);  // Save the content for inspection (optional)
 
-        return html; // Return the HTML content
+        // Save the HTML content to a file
+        fs.writeFileSync('page.html', html, 'utf-8');
+        console.log('HTML content saved to page.html');
+
+        // Close the browser
+        await browser.close();
     } catch (error) {
-        console.error(`Error during scraping: ${error.message}`);
-        throw error;
-    } finally {
-        // Ensure the browser is closed
-        if (browser) await browser.close();
+        console.error('An error occurred while scraping:', error);
     }
 }
 
+app.get('/', async (req, res) => {
+    res.json({ message: 'Scraping started!' });
 
-// API route to trigger scraping with dynamic parameters
-app.get('/scrape', async (req, res) => {
-    const { source, destination, departure_date, return_date } = req.query;
-
-    // Validate required parameters
-    if (!source || !destination || !departure_date) {
-        return res.status(400).json({ message: 'Missing required parameters (source, destination, and departure_date)' });
-    }
-
-    try {
-        // Call the scraping function with the query parameters
-        const html = await scrapeGoogleFlights(source, destination, departure_date, return_date);
-
-        // Return scraped content as JSON
-        res.json({ message: 'Scraping successful', data: html });
-    } catch (error) {
-        res.status(500).json({ message: 'Error occurred during scraping', error: error.message });
-    }
+    // Call the scrape function
+    await scrape();
 });
 
-// Start the server
-const PORT = 4000;
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+app.listen(4000, () => {
+    console.log('Server is running on http://localhost:4000');
 });
