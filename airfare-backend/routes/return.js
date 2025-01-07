@@ -94,7 +94,6 @@ async function scrapeGoogleFlights(source, destination, departureDate, returnDat
 
 router.get('/', async (req, res) => {
     const { source, destination, departure_date, return_date } = req.query;
-
     // Validate required parameters
     if (!source || !destination || !departure_date) {
         return res.status(400).json({ message: 'Missing required parameters (source, destination, and departure_date)' });
