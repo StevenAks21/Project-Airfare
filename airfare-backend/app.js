@@ -2,12 +2,11 @@ const express = require('express');
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const app = express();
-const fs = require(`fs`)
+const fs = require(`fs`);
 
 // Use the stealth plugin
 puppeteer.use(StealthPlugin());
 
-// Function to scrape Google Flights with dynamic parameters
 // Function to scrape Google Flights with dynamic parameters
 async function scrapeGoogleFlights(source, destination, departureDate, returnDate) {
     let browser;
@@ -45,9 +44,19 @@ async function scrapeGoogleFlights(source, destination, departureDate, returnDat
         await page.type(sourceSelector, source, { delay: 500 });
         await page.keyboard.press(`Enter`);
 
-        const destinationSelector = 'input[placeholder="Where to?"]'; // or you can try: 'input[aria-label="Where to?"]'
+        // Set the departure and return dates first
+        const departureSelector = `input[placeholder="Departure"]`;
+        await page.waitForSelector(departureSelector, { timeout: 60000 });
+        await page.type(departureSelector, departureDate, { delay: 500 });
+        await page.keyboard.press('Enter');
 
-        // Wait for the destination input to be visible
+        const returnSelector = 'input[placeholder="Return"]';
+        await page.waitForSelector(returnSelector, { timeout: 60000 });
+        await page.type(returnSelector, returnDate, { delay: 500 });
+        await page.keyboard.press('Enter');
+
+        // Then set the destination
+        const destinationSelector = 'input[placeholder="Where to?"]';
         await page.waitForSelector(destinationSelector, { visible: true, timeout: 60000 });
 
         // Focus and clear the destination input field
@@ -61,8 +70,12 @@ async function scrapeGoogleFlights(source, destination, departureDate, returnDat
         // Type the destination value
         await page.type(destinationSelector, destination, { delay: 500 });
         await page.keyboard.press('Enter');
+        await page.keyboard.press('Enter');
 
+        // Wait for the search results to load and scrape the page content
 
+        const resultSelector = "ul.Rk10dc"
+        await page.waitForSelector(resultSelector)
         const html = await page.content();
 
         fs.writeFileSync(`x.html`, html);
@@ -72,9 +85,10 @@ async function scrapeGoogleFlights(source, destination, departureDate, returnDat
         throw error;
     } finally {
         // Ensure the browser is closed
+        if (browser) {
+        }
     }
 }
-
 
 // API route to trigger scraping with dynamic parameters
 app.get('/scrape', async (req, res) => {
