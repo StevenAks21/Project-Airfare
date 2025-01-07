@@ -1,12 +1,13 @@
 const express = require('express');
-const { Page } = require('puppeteer');
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const app = express();
+const fs = require(`fs`)
 
 // Use the stealth plugin
 puppeteer.use(StealthPlugin());
 
+// Function to scrape Google Flights with dynamic parameters
 // Function to scrape Google Flights with dynamic parameters
 async function scrapeGoogleFlights(source, destination, departureDate, returnDate) {
     let browser;
@@ -32,19 +33,48 @@ async function scrapeGoogleFlights(source, destination, departureDate, returnDat
         const sourceSelector = 'input[aria-label="Where from?"]';
         await page.waitForSelector(sourceSelector, { timeout: 60000 });
 
-        // Type source dynamically
-        await page.type(sourceSelector, source, { delay: 100 });
+        // Focus on the input field and clear the existing value by setting the value to an empty string
+        await page.evaluate((selector) => {
+            const inputField = document.querySelector(selector);
+            if (inputField) {
+                inputField.value = ''; // Clear the field
+            }
+        }, sourceSelector);
+
+        // Type the new source
+        await page.type(sourceSelector, source, { delay: 500 });
+        await page.keyboard.press(`Enter`);
+
+        const destinationSelector = 'input[placeholder="Where to?"]'; // or you can try: 'input[aria-label="Where to?"]'
+
+        // Wait for the destination input to be visible
+        await page.waitForSelector(destinationSelector, { visible: true, timeout: 60000 });
+
+        // Focus and clear the destination input field
+        await page.evaluate((selector) => {
+            const inputField = document.querySelector(selector);
+            if (inputField) {
+                inputField.value = '';  // Clear the input field value
+            }
+        }, destinationSelector);
+
+        // Type the destination value
+        await page.type(destinationSelector, destination, { delay: 500 });
+        await page.keyboard.press('Enter');
+
+
         const html = await page.content();
 
+        fs.writeFileSync(`x.html`, html);
         return html;
     } catch (error) {
         console.error(`Error during scraping: ${error.message}`);
         throw error;
     } finally {
         // Ensure the browser is closed
-        if (browser) await browser.close();
     }
 }
+
 
 // API route to trigger scraping with dynamic parameters
 app.get('/scrape', async (req, res) => {
