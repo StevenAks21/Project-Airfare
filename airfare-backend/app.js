@@ -4,8 +4,6 @@ const app = express();
 const fs = require('fs');
 
 // Function to scrape Google Flights with dynamic parameters
-// Function to scrape Google Flights with dynamic parameters
-// Function to scrape Google Flights with dynamic parameters
 async function scrapeGoogleFlights(source, destination, departureDate, returnDate) {
     let browser;
     try {
