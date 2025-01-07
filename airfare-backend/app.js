@@ -1,17 +1,25 @@
 const express = require('express');
-const puppeteer = require('puppeteer');
+const { Page } = require('puppeteer');
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const app = express();
-const fs = require('fs');
+
+// Use the stealth plugin
+puppeteer.use(StealthPlugin());
 
 // Function to scrape Google Flights with dynamic parameters
 async function scrapeGoogleFlights(source, destination, departureDate, returnDate) {
     let browser;
     try {
-        // Launch the browser
+        // Launch the browser with stealth enabled
         browser = await puppeteer.launch({ headless: false });
 
         // Open a new page
         const page = await browser.newPage();
+
+        // Set user agent and viewport to simulate a real user
+        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
+        await page.setViewport({ width: 1280, height: 800 });
 
         // Construct the URL dynamically based on input parameters
         const baseUrl = 'https://www.google.com/travel/flights';
@@ -20,16 +28,15 @@ async function scrapeGoogleFlights(source, destination, departureDate, returnDat
         // Navigate to the initial Google Flights page
         await page.goto(url);
 
-        // Wait for "Where from?" input field to be visible and interact with it
+        // Wait for "Where from?" input field to be visible
         const sourceSelector = 'input[aria-label="Where from?"]';
         await page.waitForSelector(sourceSelector, { timeout: 60000 });
-        await page.click(sourceSelector);
-        await page.keyboard.down("Control");
-        await page.keyboard.press("a");
-        await page.keyboard.up("Control");
-        await page.keyboard.press(`Backspace`);
 
+        // Type source dynamically
+        await page.type(sourceSelector, source, { delay: 100 });
+        const html = await page.content();
 
+        return html;
     } catch (error) {
         console.error(`Error during scraping: ${error.message}`);
         throw error;
@@ -38,7 +45,6 @@ async function scrapeGoogleFlights(source, destination, departureDate, returnDat
         if (browser) await browser.close();
     }
 }
-
 
 // API route to trigger scraping with dynamic parameters
 app.get('/scrape', async (req, res) => {
