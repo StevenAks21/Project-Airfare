@@ -54,7 +54,7 @@
 
             const returnSelector = 'input[placeholder="Return"]';
             await page.waitForSelector(returnSelector, { timeout: 60000 });
-            await page.type(returnSelector, returnDate, { delay: 200 });
+            await page.type(returnSelector, returnDate, { delay: 300 });
             await page.keyboard.press('Enter');
 
             // Then set the destination
