@@ -23,20 +23,8 @@ async function scrapeGoogleFlights(source, destination, departureDate, returnDat
         // Wait for "Where from?" input field to be visible and interact with it
         const sourceSelector = 'input[jsname="yrriRe"][aria-label="Where from?"]';
         await page.waitForSelector(sourceSelector, { timeout: 60000 });  // Increased timeout to 60 seconds
-        await page.click(sourceSelector);
-        await page.type(sourceSelector, source, { delay: 100 });
-
-        const logoSelector =`Eo39gc`
-        await page.click(logoSelector)
-
-        // Wait for "Where to?" input field to be visible and interact with it
-        const destinationSelector = 'input[jsname="yrriRe"][aria-label="Where to?"]';
-        await page.waitForSelector(destinationSelector, { timeout: 60000 });  // Increased timeout to 60 seconds
-        await page.click(destinationSelector);
-        await page.type(destinationSelector, destination, { delay: 100 });
-        // Take a screenshot (optional, for debugging)
-        await page.screenshot({ path: 'flights_example.png' });
-
+        await page.click();
+        
         // Get the page content
         const html = await page.content();
         fs.writeFileSync("scraped_flights.html", html);  // Save the content for inspection (optional)
